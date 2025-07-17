@@ -6,13 +6,14 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+const queryClient = new QueryClient();
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance
-const router = createRouter({ routeTree });
+const router = createRouter({ routeTree ,context:{queryClient}});
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
@@ -22,7 +23,6 @@ declare module "@tanstack/react-router" {
 }
 
 
-const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
