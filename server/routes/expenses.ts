@@ -27,7 +27,7 @@ export const expensesRoute = new Hono()
     const expenses = await db
       .select()
       .from(expensesTable)
-      .where(eq(expensesTable.userId, user.id));
+      .where(eq(expensesTable.userId, user.id)).orderBy(expensesTable.createdAt).limit(100);
     return c.json({ expenses: expenses });
   })
   .post("/", getUser, zValidator("json", createPostSchema), async (c) => {
