@@ -8,6 +8,20 @@
       "when": 1752770650748,
       "tag": "0000_thankful_hellion",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1752822236313,
+      "tag": "0001_fearless_black_widow",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1753007613607,
+      "tag": "0002_spotty_wasp",
+      "breakpoints": true
     }
   ]
 }
