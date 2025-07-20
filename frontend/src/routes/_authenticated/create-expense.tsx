@@ -3,10 +3,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useForm } from "@tanstack/react-form";
-import { api } from "@/lib/api";
+import {
+  createExpense,
+  expenseQueryOption,
+  loadingQueryOption,
+} from "@/lib/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { Calendar } from "@/components/ui/calendar";
 import { type AnyFieldApi } from "@tanstack/react-form";
 import { createPostSchema } from "../../../../server/sharedTypes";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/create-expense")({
   component: CreateExpense,
@@ -26,6 +32,7 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
 }
 
 function CreateExpense() {
+  const queryClinet = useQueryClient();
   const navigate = useNavigate();
   const form = useForm({
     defaultValues: {
@@ -37,10 +44,25 @@ function CreateExpense() {
       onChange: createPostSchema,
     },
     onSubmit: async ({ value }) => {
-      const res = await api.expenses.$post({ json: value });
-      if (!res.ok) throw new Error("server error");
-      console.log(value);
+      const exsistingExpenses =
+        await queryClinet.ensureQueryData(expenseQueryOption);
       navigate({ to: "/expenses" });
+
+      queryClinet.setQueryData(loadingQueryOption.queryKey, { expense: value });
+      try {
+        const newExpense = await createExpense({ value });
+        queryClinet.setQueryData(expenseQueryOption.queryKey, [
+          newExpense,
+          ...exsistingExpenses,
+        ]);
+        toast.success("Expense Created",{description:`Successfully created a new expense: ${newExpense.id}`});
+      } catch (error) {
+        toast("Error", {
+          description: "Something Went Wrong",
+        });
+      } finally {
+        queryClinet.setQueryData(loadingQueryOption.queryKey, {});
+      }
     },
   });
 
