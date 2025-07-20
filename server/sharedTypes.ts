@@ -5,3 +5,6 @@ export type Expense = z.infer<typeof expenseSchema>;
 export const createPostSchema = expenseSchema.omit({
   id: true,
 });
+
+
+export type CreatePostSchema = z.infer<typeof createPostSchema>;
